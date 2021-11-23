@@ -1,0 +1,19 @@
+\section{Abstract}
+% This needs to be updated to have what we actually delivered
+
+\noindent This project will build a system to process and forecast domain-agnostic live spatio-temporal data over a large geographical region while maintaining reliability and constant up-time.
+The main objective is not to produce novel forecasting results, but rather to support and enable a performant large-scale system.
+There will be limited traditional programming in Turing complete languages and a more significant focus on declarative programming using open-source DevOps tools.
+The general architecture will follow classic "cloud-native" and "microservice" architecture principles to enable scaling and maintainability.
+We will configure a CI/CD system that enables new features to be developed and released without system downtime.
+To support forecasting, we maintain a simple data pipeline with live data monitoring into a time-series database focusing on fault tolerance.
+For forecasting, we will utilize kriging to fill in spare geographical data, which enables better and more consistent forecasting.
+We will employ the use of existing visualization and monitoring tools to display the results of kriging.
+Additionally, we will utilize a data pipeline monitoring system to track failures and up-time. 
+
+
+\section{Challenges Faced}
+% Any challenges faced should be here
+
+\section{Lessons Learned}
+% For example, value of keeping everything as code

@@ -1,9 +1,11 @@
+% TODO: Fix outline (default template are not so great) so different sections can be in different body
+
 \documentclass[12pt, oneside]{report}
 \usepackage[margin=0.85in]{geometry}
 \linespread{1}
 \usepackage{xcolor}
 \usepackage[colorlinks=false, linkbordercolor=white, citebordercolor=white, 
-    filebordercolor=white, urlbordercolor=white]{hyperref}
+           filebordercolor=white, urlbordercolor=white]{hyperref}
     
 \usepackage{graphicx}
 \usepackage[utf8]{inputenc}
@@ -23,8 +25,6 @@
 
 \titleformat{\chapter}{\normalfont\huge\bf}{\thechapter}{20pt}{\huge\bf}
 
-
-% Definice prostredi
 \usepackage{listings}
 \definecolor{dgray}{gray}{0.35} 
 \definecolor{lgray}{gray}{0.95} 
@@ -44,5 +44,5 @@ breaklines=T}
 
 \input{title_page} 
 \addtocontents{toc}{~\hfill\textbf{Page}\par}
-\input{description} 
+\input{body.tex} 
 \end{document}
