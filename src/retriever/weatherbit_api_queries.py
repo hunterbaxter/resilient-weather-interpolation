@@ -4,14 +4,14 @@ from datetime import datetime
 BASE_URL = "https://api.weatherbit.io/v2.0/"
 
 
-def get_current_weather(key: str,
+def current_weather_url(key: str,
                         lat: float,
                         lon: float) -> str:
     return BASE_URL + \
         f"current?lat={lat}&lon={lon}&include=minutely&key={key}"
 
 
-def get_historical_weather(key: str,
+def historical_weather_url(key: str,
                            lat: float,
                            lon: float,
                            start_date: str,

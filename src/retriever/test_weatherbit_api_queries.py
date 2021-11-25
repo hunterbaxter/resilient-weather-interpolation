@@ -1,8 +1,7 @@
 import pytest
 
-
-from src.retriever.weatherbit_api_queries import get_current_weather, \
-    get_historical_weather
+from src.retriever.weatherbit_api_queries import current_weather_url, \
+    historical_weather_url
 
 
 def test_get_historical_weather():
@@ -11,7 +10,7 @@ def test_get_historical_weather():
     lon = -86.668823
     valid_start = "2021-01-01"
     valid_end = "2021-02-02"
-    assert get_historical_weather(key=key,
+    assert historical_weather_url(key=key,
                                   lat=lat,
                                   lon=lon,
                                   start_date=valid_start,
@@ -21,7 +20,7 @@ def test_get_historical_weather():
     invalid_start = "01-01-2021"
     invalid_end = "01-01-2021"
     with pytest.raises(ValueError):
-        get_historical_weather(key=key,
+        historical_weather_url(key=key,
                                lat=lat,
                                lon=lon,
                                start_date=invalid_start,
@@ -32,7 +31,7 @@ def test_get_current_weather():
     key = "test_key"
     lat = 36.131687
     lon = -86.668823
-    assert get_current_weather(key=key,
+    assert current_weather_url(key=key,
                                lat=lat,
                                lon=lon) \
-    == f"https://api.weatherbit.io/v2.0/current?lat={lat}&lon={lon}&include=minutely&key=test_key"
+        == f"https://api.weatherbit.io/v2.0/current?lat={lat}&lon={lon}&include=minutely&key=test_key"
