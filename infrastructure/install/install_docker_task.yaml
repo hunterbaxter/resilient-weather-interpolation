@@ -1,0 +1,66 @@
+- name: "Uninstall older versions of Docker"
+  apt:
+    name: "{{ item }}"
+    state: absent
+  loop:
+    - docker
+    - docker-engine
+    - docker.io
+    - containerd
+    - runc
+  become: yes
+
+- name: "Install underlying packages needed for Docker"
+  apt:
+    name: "{{ item }}"
+    state: latest
+    update_cache: yes
+  loop:
+    - curl
+    - apt-transport-https
+    - ca-certificates
+    - gnupg
+    - lsb-release
+  become: yes
+
+  # Add the apt key
+- name: "Add apt key for Docker"
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present   # this is default
+    keyring: /usr/share/keyrings/docker-archive-keyring.gpg
+  become: yes
+
+- name: Add Docker repository to apt
+  apt_repository:
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu focal stable"
+    state: present
+    filename: docker.list
+  become: yes
+
+  # This will install Docker
+- name: Install Docker
+  apt:
+    name: "{{ item }}"
+    state: latest
+    update_cache: yes
+  loop:
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
+  become: yes
+
+# Add the docker group, if it does not exist
+- name: Add a group called docker
+  become: yes
+  group:
+    name: docker
+    state: present
+
+# add user to docker group
+- name: Add user to docker group
+  become: yes
+  user:
+    name: "ubuntu"
+    append: yes
+    groups: docker

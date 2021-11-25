@@ -1,0 +1,40 @@
+- name: Create EC2 Instance for "{{instance_name}}"
+  ec2:
+    aws_access_key: "{{access_key}}"
+    aws_secret_key: "{{secret_key}}"
+    key_name: "{{key_path}}"
+    instance_type: "{{instance_type}}"
+    image: "{{image}}"
+    group: "{{security_group}}"
+    wait: yes
+    count: 1
+    instance_tags:
+      Name: "{{instance_name}}"
+    monitoring: no
+    register: new_instance
+
+- name: Allocating Elastic IP to "{{instance_name}}"
+  ec2_eip:
+    aws_access_key: "{{access_key}}"
+    aws_secret_key: "{{secret_key}}"
+    device_id: "{{new_instance.instance_ids[0]}}"
+    region: "{{region}}"
+    ip: "{{elastic_ip}}"
+  register: instance_eip
+
+- name: Wait for "{{instance_name}}" to be ready
+  wait_for:
+    host: "{{ new_instance.instances[0].public_ip }}"
+    port: 22
+    connect_timeout: 10
+    delay: 10
+    sleep: 5
+    state: started
+    timeout: 300
+- debug:
+    msg: Completed Connection to "{{ instance_name }}" at ip="{{r.instances[0].public_ip}}"
+
+- name: Add "{{instance_name}}" to Inventory
+  add_host:
+    name: "{{elastic_ip}}"
+    group: "{{group_name}}"
