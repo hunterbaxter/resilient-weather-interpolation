@@ -1,1 +1,19 @@
 # TODO: pull docker image
+# https://docs.ansible.com/ansible/latest/collections/community/docker/index.html
+- name: "Pull influxdb image"
+  docker_image:
+    name: library/influxdb:2.1.1
+    pull:
+      platform: amd64
+
+- name: "Start InfluxDb"
+  community.docker.docker_container:
+    name: influx
+    image: library/influxdb:2.1.1
+    command: redis-server --appendonly yes
+    state: present
+    recreate: yes
+    exposed_ports:
+      - 6379
+    volumes_from:
+      - mydata

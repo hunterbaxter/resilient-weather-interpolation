@@ -1,30 +1,38 @@
 ---
 - name: "Set Up Database"
   hosts: localhost
+  remote_user: ubuntu
   vars_files:
     - ./config/credentials.yaml
     - ./config/database.yaml
   tasks:
-    - include_tasks: ./launch_instance_task.yaml
-      vars:
-        access_key: "{{aws_access_key}}"
-        secret_key: "{{aws_secret_key}}"
-        key_path: "{{key_path}}"
-        instance_name: "{{instance_name}}"
-        group_name: "{{db_group_name}}"
-        instance_type: "{{instance_type}}"
-        image: "{{image}}"
-        security_group: "{{security_group}}"
-        region: "{{region}}"
-        elastic_ip: "{{elastic_ip}}"
+    # - include_tasks: ./launch_instance_task.yaml
+    #   vars:
+    #     access_key: "{{aws_access_key}}"
+    #     secret_key: "{{aws_secret_key}}"
+    #     key_path: "{{key}}"
+    #     instance_name: "{{db_instance_name}}"
+    #     group_name: "{{db_group_name}}"
+    #     instance_type: "{{db_instance_type}}"
+    #     image: "{{db_image}}"
+    #     security_group: "{{db_security_group}}"
+    #     region: "{{db_region}}"
+    #     elastic_ip: "{{db_elastic_ip}}"
+    - name: Add "{{instance_name}}" to Inventory
+      add_host:
+        ansible_ssh_private_key_file: "~/.ssh/cloud_computing_main.pem"
+        ansible_user: ubuntu
+        name: "{{db_elastic_ip}}"
+        group: "{{db_group_name}}"
 
-- name: "Load Software onto Baremetal"
+- name: "Load Software onto baremetal"
+  hosts: "{{db_group_name}}"
+  remote_user: ubuntu
   vars_files:
     - ./config/database.yaml
-  groups: "{{db_group_name}}"
-  become: yes
+  become: true
   tasks:
     - include_tasks: ./install/install_docker_task.yaml
-    - include_tasks: ./install/install_influxdb_task.yaml
-    - include_tasks: ./run/run_influxdb_task.yaml
+    # - include_tasks: ./install/install_influxdb_task.yaml
+    # - include_tasks: ./run/run_influxdb_task.yaml
 ...
