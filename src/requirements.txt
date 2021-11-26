@@ -1,4 +1,5 @@
+influxdb-client[ciso]
 pytest
 pytest-cov
+pandas
 requests
-influxdb-client[ciso]
