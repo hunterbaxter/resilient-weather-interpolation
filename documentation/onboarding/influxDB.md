@@ -27,7 +27,7 @@ docker pull influxdb:2.1.1
 
 Run the Container (although this is not working unfortunatley)
 ```
-docker run -d -p 8086:8086 \
+docker run -dit -p 8086:8086 \
       -v $PWD/data:/var/lib/influxdb2 \
       -v $PWD/config:/etc/influxdb2 \
       -e DOCKER_INFLUXDB_INIT_MODE=setup \
@@ -35,6 +35,12 @@ docker run -d -p 8086:8086 \
       -e DOCKER_INFLUXDB_INIT_PASSWORD=testpassword \
       -e DOCKER_INFLUXDB_INIT_ORG=testorg \
       -e DOCKER_INFLUXDB_INIT_BUCKET=testbucket \
+      influxdb:2.1.1
+```
+```
+sudo docker run -dit -p 8086:8086 \
+      --name i00 \
+      -v $PWD:/var/lib/influxdb2 \
       influxdb:2.1.1
 ```
 
