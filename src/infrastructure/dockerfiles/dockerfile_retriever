@@ -1,0 +1,14 @@
+FROM ubuntu:focal
+ENV TZ=US
+ENV DEBIAN_FRONTEND noninteractive
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+COPY ../../retriever/retriever.py /
+COPY ../../retriever/weatherbit_api_queries.py /
+COPY ../../retriever/requirements.txt /
+RUN apt-get update -y && apt-get install -y \
+    python3 \
+    python3-pip \
+    net-tools \
+    curl
+RUN pip3 install -r requirements.txt

@@ -26,5 +26,6 @@ def retrieve_and_send_current(ip: str,
                               lat: float,
                               lon: float) -> None:
     producer = KafkaProducer(bootstrap_servers=f"{ip}:9092", acks=1)
-    data = get_request_weatherbit(key, lat, lon)["data"][0]
-    producer.send(f"lat{lat}lon{lon}", value=bytes(data, 'ascii'))
+    # data = get_request_weatherbit(key, lat, lon)["data"][0]
+    data = "hi"
+    producer.send(f"lat{lat}lon{lon}", value=bytes(str(data), 'ascii'))
