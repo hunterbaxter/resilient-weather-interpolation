@@ -7,6 +7,17 @@ docker pull bitnami/zookeeper:latest
 ```
 
 ```
+docker network create app-tier --driver bridge
+```
+
+```
+ docker run -d --name zookeeper-server \
+    --network app-tier \
+    -e ALLOW_ANONYMOUS_LOGIN=yes \
+    bitnami/zookeeper:latest
+```
+
+```
 docker run -d --name kafka-server \
     --network app-tier \
     -e ALLOW_PLAINTEXT_LISTENER=yes \

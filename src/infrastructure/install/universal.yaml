@@ -1,0 +1,20 @@
+- name: "update apt"
+  shell: apt-get update -y
+
+- name: "Install underlying packages needed for our stuff"
+  apt:
+    name: "{{ item }}"
+    state: latest
+    update_cache: yes
+  loop:
+    - default-jre
+    - wget
+    - python3
+    - python3-pip
+    - curl
+    - net-tools
+  become: yes
+
+- name: "intall all amazon packages"
+  shell: pip install boto boto3 botocore
+
