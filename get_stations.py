@@ -11,6 +11,8 @@ BOT_LAT = 35.55
 df = df[(BOT_LAT < df["lat"]) & (df["lat"] < TOP_LAT) &
         (LEFT_LONG < df["lon"]) & (df["lon"] < RIGHT_LONG)]
 print(f"unique stations in region = {len(df['station_id'].unique())}")
-df[["station_id", "lat", "lon"]].to_csv("stations_production.csv", index=False)
-df[["station_id", "lat", "lon"]] \
+df["coordinates"] = list(zip(df["lat"], df["lon"]))
+df[["station_id", "coordinates"]]\
+    .to_csv("stations_production.csv", index=False)
+df[["station_id", "coordinates"]]\
     .head(2).to_csv("stations_test.csv", index=False)
