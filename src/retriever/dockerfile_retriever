@@ -3,9 +3,9 @@ ENV TZ=US
 ENV DEBIAN_FRONTEND noninteractive
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-COPY ../../retriever/retriever.py /
-COPY ../../retriever/weatherbit_api_queries.py /
-COPY ../../retriever/requirements.txt /
+COPY ./* ./
+# COPY weatherbit_api_queries.py ./
+# COPY requirements.txt ./
 RUN apt-get update -y && apt-get install -y \
     python3 \
     python3-pip \

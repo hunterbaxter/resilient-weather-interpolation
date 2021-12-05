@@ -64,3 +64,9 @@
     name: "ubuntu"
     append: yes
     groups: docker
+
+- name: "Start Docker"
+  command: sudo systemctl start docker
+
+- name: "Enable Docker"
+  command: sudo systemctl enable docker

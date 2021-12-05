@@ -1,5 +1,5 @@
 ---
-- name: Install and Run Kafka
+- name: Launch Kafka Instance
   hosts: localhost
   vars_files:
     - ./config/credentials.yaml
@@ -17,22 +17,36 @@
         security_group: "{{k_security_group}}"
         region: "{{k_region}}"
         elastic_ip: "{{k_elastic_ip}}"
+    - include_tasks: ./add_to_host_task.yaml
+      vars:
+        key_location: "~/.ssh/cloud_computing_main.pem"
+        ip: "{{k_elastic_ip}}"
+        group_name: "{{k_group_name}}"
 
 
-- name: Run
-  hosts: all
+- name: Set Up a Kafka Server
+  hosts: "{{k_group_name}}"
   remote_user: ubuntu
   vars_files:
-    - ./config/credentials.yaml
     - ./config/kafka.yaml
   become: yes
   tasks:
-    - include_tasks: ./install/universal.yaml
-    - include_tasks: ./install/kafka.yaml
-    - include_tasks: ./setup/kafka_server.yml
+    - include_tasks: ./install/install_universal_task.yaml
+    - include_tasks: ./install/install_kafka_task.yaml
+    - include_tasks: ./install/install_docker_task.yaml
+    - include_tasks: ./docker/containerize_kafka_task.yaml
+    - include_tasks: ./setup/kafka_server.yaml
       vars:
-        instance_name: "{{consumer_instance_name}}"
+        instance_name: "{{k_instance_name}}"
         kafka_ip: "{{k_elastic_ip}}"
-        access_key: "{{aws_access_key}}"
-        secret_key: "{{aws_secret_key}}"
+
+- name: Run Kafka Server
+  hosts: "{{k_group_name}}"
+  remote_user: ubuntu
+  vars_files:
+    - ./config/kafka.yaml
+  become: yes
+  tasks:
+    # NOTE: one needs to manually clean up containers
+    - include_tasks: ./docker/run_kafka_image.yaml
 ...

@@ -15,6 +15,3 @@ RUN apt-get -y update && apt-get install -y \
     apt-transport-https \
     gnupg \
     net-tools
-
-# CMD kafka/bin/kafka-server-start.sh kafka/config/server.properties
-
