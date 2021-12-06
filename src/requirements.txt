@@ -1,5 +1,5 @@
-influxdb-client[ciso]
 pytest
 pytest-cov
 pandas
 requests
+kafka-python

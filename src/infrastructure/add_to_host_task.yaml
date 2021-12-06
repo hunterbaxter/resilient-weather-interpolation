@@ -1,0 +1,7 @@
+- name: "Add to Hosts"
+  add_host:
+    ansible_ssh_private_key_file: "{{key_location}}"
+    ansible_user: "ubuntu"
+    hostname: "{{ip}}"
+    groups:
+      - "{{group_name}}"

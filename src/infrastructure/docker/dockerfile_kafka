@@ -1,0 +1,17 @@
+FROM ubuntu:focal
+ENV TZ=US
+ENV DEBIAN_FRONTEND noninteractive
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+RUN mkdir kafka
+COPY kafka_2.13-3.0.0 /kafka/
+
+RUN apt-get -y update && apt-get install -y \
+    default-jre \
+    python3 \
+    python3-pip \
+    wget \
+    curl \
+    apt-transport-https \
+    gnupg \
+    net-tools

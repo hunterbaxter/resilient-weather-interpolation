@@ -1,8 +1,15 @@
-from influxdb_client import InfluxDBClient
-from influxdb_client.client.write_api import SYNCHRONOUS
+from ast import literal_eval as make_tuple
+from kafka import KafkaProducer  # producer of events
 import pandas as pd
 import requests
+import logging
+from time import sleep
 from .weatherbit_api_queries import current_weather_url, historical_weather_url
+
+
+STATION_CSV_PATH = "stations_production.csv"
+# NOTE: limitation is due to weatherbit api pricing
+CALLS_PER_SECOND = 5
 
 
 def get_request_weatherbit(key: str,
@@ -23,77 +30,34 @@ def get_request_weatherbit(key: str,
             f"Get Request Failed with Status Code {response.status_code}")
 
 
-def convert_time(timestamp):
-    # TODO: write test to catch error if wrong format or unit
-
-    # NOTE: if one wants to use non-unix field
-    # t = pd.to_datetime(timestamp,
-    #                    format="%Y-%m-%d %H:%M")
-    return pd.to_datetime(timestamp, unit='s', utc=True)
-
-
-def retrieve_and_send_current(host_url: str,
-                              token: str,
-                              org: str,
-                              bucket: str,
-                              key: str,
+def retrieve_and_send_current(ip: str,
                               lat: float,
-                              lon: float) -> None:
-    client = InfluxDBClient(url=host_url,
-                            token=token,
-                            org=org)
-    # TODO: Explore performance options here
-    write_api = client.write_api(write_options=SYNCHRONOUS)
-
-    # TODO: Confirm that bucket parameter is actually a bucket in client
-    # NOTE: See documentation for why data is retrieved like this
+                              lon: float,
+                              key: str) -> None:
+    producer = KafkaProducer(bootstrap_servers=f"{ip}:9092", acks=1)
     data = get_request_weatherbit(key, lat, lon)["data"][0]
-    record = []
-    try:
-        record.append({
-            "measurement": "weather",
-            "tags": {
-                "lat": data['lat'],
-                "lon": data['lon']
-            },
-            # TODO: Need to resolve timezone issues - this is the last value
-            "time": convert_time(data['ts']),
-            "fields": {
-                'wind_cdir': data['wind_cdir'],
-                'rh': float(data['rh']),
-                'pod': data['pod'],
-                'pres': float(data['pres']),
-                'timezone': data['timezone'],
-                'country_code': data['country_code'],
-                'clouds': float(data['clouds']),
-                'vis': float(data['vis']),
-                'wind_spd': float(data['wind_spd']),
-                'wind_cdir_full': data['wind_cdir_full'],
-                'app_temp': float(data['app_temp']),
-                'state_code': data['state_code'],
-                'h_angle': float(data['h_angle']),
-                'dewpt': float(data['dewpt']),
-                'weather_icon': data['weather']["icon"],
-                'weather_code': int(data['weather']["code"]),
-                'weather_description': data['weather']["description"],
-                'uv': float(data['uv']),
-                'aqi': float(data['aqi']),
-                # TODO: Find a list of stations in nashville with their lat/lon
-                'station': data['station'],
-                'wind_dir': float(data['wind_dir']),
-                'elev_angle': float(data['elev_angle']),
-                'precip': float(data['precip']),
-                'ghi': float(data['ghi']),
-                'dni': float(data['dni']),
-                'dhi': float(data['dhi']),
-                'solar_rad': float(data['solar_rad']),
-                'city_name': data['city_name'],
-                'sunrise': data['sunrise'],
-                'sunset': data['sunset'],
-                'temp': float(data['temp']),
-                'slp': float(data['slp']),
-            }
-        })
-    except Exception as e:
-        print(f"ERROR: {e}")
-    write_api.write(bucket=bucket, record=record)
+    producer.send(f"lat{lat}lon{lon}", value=bytes(str(data), 'ascii'))
+
+
+def retrieve_cycle(ip: str,
+                   lat: float,
+                   lon: float,
+                   key: str):
+    logging.info("Starting a retrieve cycle")
+    # TODO: Dynamically get staions in bounded box
+    # columsn are "station_id", and "coordinates" which is lat,lon
+    logging.debug("reading stations file")
+    stations = pd.read_csv(STATION_CSV_PATH)
+    logging.debug("succesfully read stations file")
+    # used to ensure we don't go over API limits
+    count = 0
+    for i in stations["coordinates"]:
+        if count % CALLS_PER_SECOND == 0:
+            sleep(1)
+            count = 0
+        coordinates = make_tuple(i)
+        print(f"lat: {coordinates[0]}")
+        print(f"lon: {coordinates[1]}")
+        logging.debug(f"retrieving and sending station at {coordinates}")
+        retrieve_and_send_current(ip=ip, lat=lat, lon=lon, key=key)
+    logging.info("Ending a retrieve cycle")

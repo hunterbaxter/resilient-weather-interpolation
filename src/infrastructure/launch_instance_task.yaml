@@ -25,7 +25,8 @@
 
 - name: Wait for "{{instance_name}}" to be ready
   wait_for:
-    host: "{{ new_instance.instances[0].public_ip }}"
+    # host: "{{ new_instance.instances[0].public_ip }}"
+    host: "{{ elastic_ip }}"
     port: 22
     connect_timeout: 10
     delay: 10
@@ -33,4 +34,5 @@
     state: started
     timeout: 300
 - debug:
-    msg: Completed Connection to "{{ instance_name }}" at ip="{{new_instance.instances[0].public_ip}}"
+    # msg: Completed Connection to "{{ instance_name }}" at ip="{{new_instance.instances[0].public_ip}}"
+    msg: Completed Connection to "{{ instance_name }}" at ip="{{elastic_ip}}"

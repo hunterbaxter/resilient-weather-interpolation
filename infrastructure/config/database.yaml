@@ -1,9 +1,0 @@
----
-db_instance_name: influxdb
-db_group_name: database
-db_instance_type: t2.medium
-db_image: ami-00399ec92321828f5
-db_security_group: everyone_get_in_here
-db_region: us-east-2
-db_elastic_ip: 18.118.248.88
-...
