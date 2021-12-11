@@ -2,4 +2,4 @@ requests
 kafka-python
 argparse
 apscheduler
-logging
+pandas
