@@ -1,10 +1,11 @@
 ---
-- name: Launch Kafka Instance
+- name: Launch kafka instance
   hosts: localhost
   vars_files:
     - ./config/credentials.yaml
     - ./config/kafka.yaml
   tasks:
+    - include_tasks: ./install/install_ansible_libraries.yaml
     - include_tasks: ./launch_instance_task.yaml
       vars:
         access_key: "{{aws_access_key}}"
@@ -24,7 +25,7 @@
         group_name: "{{k_group_name}}"
 
 
-- name: Set Up a Kafka Server
+- name: Set up a kafka server
   hosts: "{{k_group_name}}"
   remote_user: ubuntu
   vars_files:
@@ -33,14 +34,14 @@
   tasks:
     - include_tasks: ./install/install_universal_task.yaml
     - include_tasks: ./install/install_kafka_task.yaml
-    - include_tasks: ./install/install_docker_task.yaml
-    - include_tasks: ./docker/containerize_kafka_task.yaml
     - include_tasks: ./setup/kafka_server.yaml
       vars:
         instance_name: "{{k_instance_name}}"
         kafka_ip: "{{k_elastic_ip}}"
+    - include_tasks: ./install/install_docker_task.yaml
+    - include_tasks: ./docker/containerize_kafka_task.yaml
 
-- name: Run Kafka Server
+- name: Run kafka server
   hosts: "{{k_group_name}}"
   remote_user: ubuntu
   vars_files:

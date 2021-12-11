@@ -1,11 +1,11 @@
 - name: Run Zookeeper Container
-  shell: docker run -dtp 0.0.0.0:2181:2181 --name zookeeper00 kafka
+  shell: docker run -dtp 2181:2181 --name zoo kafka
 
 - name: Start Zookeeper Server
-  shell: docker exec -d zookeeper00 kafka/bin/zookeeper-server-start.sh kafka/config/zookeeper.properties
+  shell: docker exec -d zoo kafka/bin/zookeeper-server-start.sh kafka/config/zookeeper.properties
 
 - name: Start Kafka Container
-  shell: docker run -dtp 0.0.0.0:9092:9092 --name kafka00 kafka
+  shell: docker run -dtp 9092:9092 --name kaf kafka
 
 - name: Start Kafka Server
-  shell: docker exec -d kafka00 kafka/bin/kafka-server-start.sh kafka/config/server.properties
+  shell: docker exec -d kaf kafka/bin/kafka-server-start.sh kafka/config/server.properties
