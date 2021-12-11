@@ -19,7 +19,7 @@ yarn
 add mapbox access token to node env
 
 ```sh
-export MapboxAccessToken=<your_mapbox_token>
+export MapboxAccessToken=pk.eyJ1IjoiamRuaGl4IiwiYSI6ImNrd2s0NzF2ejFvb20yeW80NTlvenJ4OXMifQ.FxlxjZc-nN21l0s7N6EUwA
 ```
 
 #### 3. Start the app

@@ -148,7 +148,7 @@ const sampledata = {
       "properties": {
         "temp": "5",
         "prop1": {"this": "that"},
-        // "fillColor": [255, 0, 0] # use this to manually change the color
+        "fillColor": [255, 0, 0] // use this to manually change the color
       }
     }
   ]
