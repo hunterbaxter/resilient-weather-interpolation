@@ -49,5 +49,5 @@
   become: yes
   tasks:
     # NOTE: one needs to manually clean up containers
-    - include_tasks: ./docker/run_kafka_image.yaml
+    - include_tasks: ./docker/run_kafka_image_task.yaml
 ...

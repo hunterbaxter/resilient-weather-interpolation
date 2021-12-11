@@ -3,12 +3,16 @@ ENV TZ=US
 ENV DEBIAN_FRONTEND noninteractive
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-COPY ./* ./
-# COPY weatherbit_api_queries.py ./
-# COPY requirements.txt ./
+COPY main_retriever.py /
+COPY retriever.py /
+COPY weatherbit_api_queries.py /
+COPY requirements.txt /
+COPY stations_production.csv /
+
 RUN apt-get update -y && apt-get install -y \
     python3 \
     python3-pip \
     net-tools \
     curl
-RUN pip3 install -r requirements.txt
+
+RUN pip3 install -r /requirements.txt
