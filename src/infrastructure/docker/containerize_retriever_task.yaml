@@ -1,0 +1,20 @@
+- name: Copy Retriever directory to image
+  ansible.builtin.copy:
+    src: ../../retriever/
+    dest: /home/ubuntu
+    owner: ubuntu
+    mode: 0777
+
+- name: Build retriever image
+  ansible.builtin.shell:
+    cmd: sudo docker build -f dockerfile_{{item}} -t {{item}} .
+  loop:
+    - retriever
+
+# - name: Build retriever image
+#   docker_image:
+#     name: retriever
+#     build:
+#       dockerfile: dockerfile_retriever
+#       path: /home/ubuntu/retriever
+#     source: build
