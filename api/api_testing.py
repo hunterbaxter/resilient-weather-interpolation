@@ -4,20 +4,13 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import time
 
 
-def dum_func():
-    print('Im Dum')
-
-
-scheduler = BackgroundScheduler()
-
-scheduler.start()
-
 weather_center_names = [
-    'Center1',
-    'Center2',
-    'Center3'
+    'center1',
+    'center2',
+    'center3'
 ]
 
-time.sleep(30)
 
 kafka = KafkaWeather(weather_center_names, '1.1.1.1.1.2')
+
+print(kafka.get_GeoJSON_data())

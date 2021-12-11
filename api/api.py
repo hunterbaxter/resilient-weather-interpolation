@@ -3,9 +3,9 @@ from flask import request, jsonify
 from kafka_tools import KafkaWeather
 
 weather_center_names = [
-    'Center1',
-    'Center2',
-    'Center3'
+    'center1',
+    'center2',
+    'center3'
 ]
 
 kafka = KafkaWeather(weather_center_names, '1.1.1.1.1.2')
