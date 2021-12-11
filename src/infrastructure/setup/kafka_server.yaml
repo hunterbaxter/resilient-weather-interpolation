@@ -1,0 +1,23 @@
+- name: "Changing Listener"
+  lineinfile:
+    path: /home/ubuntu/kafka_2.13-3.0.0/config/server.properties
+    regexp: "#listeners=PLAINTEXT://:9092"
+    line: "listeners=PLAINTEXT://:9092"
+
+- name: "Changing Public Listener"
+  lineinfile:
+    path: /home/ubuntu/kafka_2.13-3.0.0/config/server.properties
+    regexp: "#advertised.listeners=PLAINTEXT://your.host.name:9092"
+    line: "advertised.listeners=PLAINTEXT://{{kafka_ip}}:9092"
+
+- name: "Uncomment listener.security.protocol"
+  lineinfile:
+    path: /home/ubuntu/kafka_2.13-3.0.0/config/server.properties
+    regexp: "#listener.security.protocol.map=PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL"
+    line: "listener.security.protocol.map=PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL"
+
+- name: "Adding zookeeper connects"
+  lineinfile:
+    path: /home/ubuntu/kafka_2.13-3.0.0/config/server.properties
+    regexp: "zookeeper.connect=localhose:2181"
+    line: "zookeeper.connect={{kafka_ip}}:2181"

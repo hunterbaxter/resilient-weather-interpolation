@@ -1,0 +1,2 @@
+- name: Install requirements
+  shell: ansible-galaxy collection install -r requirements.yaml
