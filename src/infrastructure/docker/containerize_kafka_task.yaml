@@ -1,12 +1,21 @@
-- name: Copy Dockerfile to Instance
+- name: Copy dockerfile to instance
   ansible.builtin.copy:
     src: ./dockerfile_kafka
     dest: /home/ubuntu/
     owner: ubuntu
     mode: 0777
 
-- name: Build Kafka Image
+- name: Build kafka image
   ansible.builtin.shell:
     cmd: sudo docker build -f dockerfile_{{item}} -t {{item}} .
   loop:
     - kafka
+
+# FIXME: this should work
+# - name: Build Kafka image
+#   docker_image:
+#     name: retriever
+#     build:
+#       dockerfile: dockerfile_kafka
+#       path: /home/ubuntu/
+#     source: build
