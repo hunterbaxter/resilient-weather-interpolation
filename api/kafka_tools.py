@@ -1,5 +1,9 @@
 # from kafka import KafkaConsumer
 from pandas import Timestamp
+from apscheduler.schedulers.background import BackgroundScheduler
+
+# LON THEN LAT
+
 
 dummy_data1 = [
     {'measurement': 'weather',
@@ -49,9 +53,15 @@ class KafkaWeather():
 
     def __init__(self, weather_station_lst, broker_ip):
         self.station_dict = dict()
+        self.number = 0
+
+        # Setting up dictionary to hold most recent weather info
         for station in weather_station_lst:
             self.station_dict[station] = {
                 'latest_value': None, 'topic': 'KafkaConsumer'}
+        scheduler = BackgroundScheduler()
+        scheduler.add_job(func=self.update_map, trigger="interval", seconds=5)
+        scheduler.start()
 
     # def get_stream_from_kafka():
     #     consumer = KafkaConsumer()
@@ -68,7 +78,7 @@ class KafkaWeather():
             "geometry": {"type": "Polygon", "coordinates": [self.create_square(data['tags']['lat'], data['tags']['lon'])]}
         }
 
-    def create_square(lat, lon):
+    def create_square(self, lat, lon):
         return [
             [lat + 0.01, lon + 0.01],
             [lat + 0.01, lon - 0.01],
@@ -78,5 +88,8 @@ class KafkaWeather():
         ]
 
     def get_GeoJSON_data(self):
-        formatted_data = self.format_data_stream(dummy_data)
-        return formatted_data
+        formatted_data = self.format_data_stream(dummy_data1)
+        return "<h1>Resilient Weather Kriging " + str(self.number) + " </h1>"
+
+    def update_map(self):
+        self.number += 1

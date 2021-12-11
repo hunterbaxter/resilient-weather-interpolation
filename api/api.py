@@ -5,14 +5,10 @@ from kafka_tools import KafkaWeather
 weather_center_names = [
     'Center1',
     'Center2',
-    'Center3',
-    'Center4',
-    'Center5',
-    'Center6',
-    'Center7',
+    'Center3'
 ]
 
-kafka = KafkaWeather()
+kafka = KafkaWeather(weather_center_names, '1.1.1.1.1.2')
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
@@ -27,7 +23,7 @@ def home():
 # A route to return all of the available entries in our catalog.
 @app.route('/kepler/data', methods=['GET'])
 def api_all():
-    return KafkaWeather.get_GeoJSON_data()
+    return kafka.get_GeoJSON_data()
 
 
 app.run()
