@@ -12,3 +12,4 @@ Constant Uptime Spatio-Temporal Forecasting System
 ## Contributors
 
 - [Hunter Baxter](https://baxterhc.github.io/)
+- Meghan Callandriello
