@@ -14,3 +14,5 @@ weather_center_names = [
 kafka = KafkaWeather(weather_center_names, '1.1.1.1.1.2')
 
 print(kafka.get_GeoJSON_data())
+
+# print(kafka.get_interpolated_list())
