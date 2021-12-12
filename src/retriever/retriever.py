@@ -4,7 +4,7 @@ import pandas as pd
 import requests
 import logging
 from time import sleep
-from .weatherbit_api_queries import current_weather_url, historical_weather_url
+from weatherbit_api_queries import current_weather_url, historical_weather_url
 
 
 STATION_CSV_PATH = "stations_production.csv"
@@ -40,8 +40,6 @@ def retrieve_and_send_current(ip: str,
 
 
 def retrieve_cycle(ip: str,
-                   lat: float,
-                   lon: float,
                    key: str):
     logging.info("Starting a retrieve cycle")
     # TODO: Dynamically get staions in bounded box
@@ -52,6 +50,7 @@ def retrieve_cycle(ip: str,
     # used to ensure we don't go over API limits
     count = 0
     for i in stations["coordinates"]:
+        count = count + 1
         if count % CALLS_PER_SECOND == 0:
             sleep(1)
             count = 0
@@ -59,5 +58,8 @@ def retrieve_cycle(ip: str,
         print(f"lat: {coordinates[0]}")
         print(f"lon: {coordinates[1]}")
         logging.debug(f"retrieving and sending station at {coordinates}")
-        retrieve_and_send_current(ip=ip, lat=lat, lon=lon, key=key)
+        retrieve_and_send_current(ip=ip,
+                                  lat=coordinates[0],
+                                  lon=coordinates[1],
+                                  key=key)
     logging.info("Ending a retrieve cycle")

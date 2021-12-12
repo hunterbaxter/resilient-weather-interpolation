@@ -1,6 +1,10 @@
 import pytest
+import sys
+# from src.retriever.weatherbit_api_queries import current_weather_url, historical_weather_url
 
-from src.retriever.weatherbit_api_queries import current_weather_url, \
+sys.path.append("src/retriever/")
+
+from weatherbit_api_queries import current_weather_url, \
     historical_weather_url
 
 

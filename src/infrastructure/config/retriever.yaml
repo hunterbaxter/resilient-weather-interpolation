@@ -1,0 +1,10 @@
+---
+r_instance_name: retriever
+r_group_name: retriever
+r_instance_type: t2.medium
+r_image: ami-00399ec92321828f5
+r_security_group: everyone_get_in_here
+r_region: us-east-2
+r_elastic_ip: 3.130.100.37
+...
+

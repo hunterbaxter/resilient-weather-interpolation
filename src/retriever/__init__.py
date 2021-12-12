@@ -1,0 +1,2 @@
+from .weatherbit_api_queries import historical_weather_url, current_weather_url
+

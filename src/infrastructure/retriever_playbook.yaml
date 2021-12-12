@@ -1,0 +1,52 @@
+---
+- name: Start retriever
+  hosts: localhost
+  vars_files:
+    - ./config/credentials.yaml
+    - ./config/retriever.yaml
+  tasks:
+    - include_tasks: ./install/install_ansible_requirements_task.yaml
+    - include_tasks: ./launch_instance_task.yaml
+      vars:
+        access_key: "{{aws_access_key}}"
+        secret_key: "{{aws_secret_key}}"
+        key_path: "{{key}}"
+        instance_name: "{{r_instance_name}}"
+        group_name: "{{r_group_name}}"
+        instance_type: "{{r_instance_type}}"
+        image: "{{r_image}}"
+        security_group: "{{r_security_group}}"
+        region: "{{r_region}}"
+        elastic_ip: "{{r_elastic_ip}}"
+    - include_tasks: ./add_to_host_task.yaml
+      vars:
+        key_location: "~/.ssh/cloud_computing_main.pem"
+        ip: "{{r_elastic_ip}}"
+        group_name: "{{r_group_name}}"
+
+- name: Set up retriever
+  hosts: "{{r_group_name}}"
+  remote_user: ubuntu
+  vars_files:
+    - ./config/retriever.yaml
+  become: yes
+  tasks:
+    - include_tasks: ./install/install_universal_task.yaml
+    - include_tasks: ./install/install_docker_task.yaml
+    - include_tasks: ./docker/containerize_retriever_task.yaml
+
+- name: Run retriever server
+  hosts: "{{r_group_name}}"
+  remote_user: ubuntu
+  vars_files:
+    - ./config/credentials.yaml
+    - ./config/kafka.yaml
+    - ./config/retriever.yaml
+  become: yes
+  tasks:
+    - include_tasks: ./docker/run_retriever_image_task.yaml
+      vars:
+        instance_name: "{{k_instance_name}}"
+        kafka_ip: "{{k_elastic_ip}}"
+        key: "{{weatherbit_key}}"
+...

@@ -1,0 +1,26 @@
+- name: Create retriever container
+  shell: docker run -itd --name ret retriever
+
+# FIXME: this should work
+# - name: Create retriever container
+#   community.docker.docker_container:
+#     name: ret
+#     image: retriever
+#     detach: true
+#     tty: true
+
+- name: Run retriever code
+  shell: "docker exec -it ret \\
+    python3 /main_retriever.py \
+    --kafka_ip {{kafka_ip}} \
+    -a {{key}} \
+    -i 15"
+
+# FIXME: this should work
+# - name: Run retriever container
+#   community.docker.docker_container_exec:
+#     container: ret
+#     command: "python3 /main_retriever.py \
+#       --kafka_ip {{kafka_ip}} \
+#       -a {{key}} \
+#       -i 15"

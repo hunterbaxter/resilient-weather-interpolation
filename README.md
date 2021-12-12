@@ -2,11 +2,13 @@
 
 ## Directory Structure
 
-[Documentation](./documentation/) contains documentation for the project
+[documentation](./documentation/) contains documentation for the project
 
-[Source Code](./src/) contains source code for the project
+[src](./src/) contains source code for the project
+
+[Jenkinsfile](./Jenkinsfile) manages Jenkins build and deployment of new versions
 
 ## Contributors
 
 - [Hunter Baxter](https://baxterhc.github.io/)
-- Meghan Callandriello
+- [Meghan Callandriello](https://github.com/mcallandriello)
