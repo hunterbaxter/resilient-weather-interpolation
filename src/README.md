@@ -1,4 +1,6 @@
 # Source Code
 
 ## Directory Structure
-- [Retriever](./retriever) contains code that pulls data from weatherbit
+
+- [retriever](./retriever) contains code that pulls data from weatherbit
+- [infrastructure](./infrastructure/) contains the infrastructure as code (IaC) for the project
