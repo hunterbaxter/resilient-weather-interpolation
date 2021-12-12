@@ -12,7 +12,7 @@
     - kafka
 
 # FIXME: this should work
-# - name: Build Kafka image
+# - name: Build kafka image
 #   docker_image:
 #     name: retriever
 #     build:

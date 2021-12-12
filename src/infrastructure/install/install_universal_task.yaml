@@ -1,7 +1,7 @@
-- name: "update apt"
+- name: update apt
   shell: apt-get update -y
 
-- name: "Install underlying packages needed for our stuff"
+- name: Install underlying packages needed for our code
   apt:
     name: "{{ item }}"
     state: latest
@@ -15,6 +15,5 @@
     - net-tools
   become: yes
 
-- name: "intall all amazon packages"
+- name: install all amazon packages
   shell: pip install boto boto3 botocore
-

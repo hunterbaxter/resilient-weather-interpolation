@@ -1,11 +1,11 @@
 ---
-- name: Start Retriever
+- name: Start retriever
   hosts: localhost
   vars_files:
     - ./config/credentials.yaml
     - ./config/retriever.yaml
   tasks:
-    - include_tasks: ./install/install_ansible_libraries.yaml
+    - include_tasks: ./install/install_ansible_requirements_task.yaml
     - include_tasks: ./launch_instance_task.yaml
       vars:
         access_key: "{{aws_access_key}}"
@@ -35,7 +35,7 @@
     - include_tasks: ./install/install_docker_task.yaml
     - include_tasks: ./docker/containerize_retriever_task.yaml
 
-- name: Run Retriever server
+- name: Run retriever server
   hosts: "{{r_group_name}}"
   remote_user: ubuntu
   vars_files:

@@ -1,4 +1,4 @@
-- name: Copy Retriever directory to image
+- name: Copy retriever directory to image
   ansible.builtin.copy:
     src: ../../retriever/
     dest: /home/ubuntu

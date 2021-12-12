@@ -5,7 +5,7 @@
     - ./config/credentials.yaml
     - ./config/kafka.yaml
   tasks:
-    - include_tasks: ./install/install_ansible_libraries.yaml
+    - include_tasks: ./install/install_ansible_requirements_task.yaml
     - include_tasks: ./launch_instance_task.yaml
       vars:
         access_key: "{{aws_access_key}}"
