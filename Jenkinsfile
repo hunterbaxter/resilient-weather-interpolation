@@ -2,7 +2,7 @@ pipeline {
     stages {
         stage('build') {
             steps {
-                sh 'ansible-playbook /src/master.yml -vvv'
+                sh 'ansible-playbook /src/infrastructure/main.yaml -vvv'
             }
         }
         stage('test') {
