@@ -6,6 +6,10 @@
 
 [Source Code](./src/) contains source code for the project
 
+[Infrastructure](./infrastructure/) contains infrastructure as code for the project
+
+Jenkinsfile manages Jenkins build and deployment of new versions 
+
 ## Contributors
 
 - [Hunter Baxter](https://baxterhc.github.io/)
