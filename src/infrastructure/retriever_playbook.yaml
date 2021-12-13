@@ -20,7 +20,7 @@
         elastic_ip: "{{r_elastic_ip}}"
     - include_tasks: ./add_to_host_task.yaml
       vars:
-        key_location: "~/.ssh/cloud_computing_main.pem"
+        key_location: "{{key_path}}"
         ip: "{{r_elastic_ip}}"
         group_name: "{{r_group_name}}"
 
