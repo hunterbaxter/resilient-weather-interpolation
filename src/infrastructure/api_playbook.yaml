@@ -1,9 +1,9 @@
 ---
-- name: Launch kafka instance
+- name: Launch Weatherbit instance
   hosts: localhost
   vars_files:
     - ./config/credentials.yaml
-    - ./config/kafka.yaml
+    - ./config/api.yaml
   tasks:
     - include_tasks: ./install/install_ansible_requirements_task.yaml
     - include_tasks: ./launch_instance_task.yaml
@@ -24,30 +24,18 @@
         ip: "{{k_elastic_ip}}"
         group_name: "{{k_group_name}}"
 
-
-- name: Set up a kafka server
+- name: Set up API
   hosts: "{{k_group_name}}"
   remote_user: ubuntu
   vars_files:
-    - ./config/kafka.yaml
+    - ./config/api.yaml
   become: yes
   tasks:
     - include_tasks: ./install/install_universal_task.yaml
-    - include_tasks: ./install/install_kafka_task.yaml
-    - include_tasks: ./setup/kafka_server.yaml
-      vars:
-        instance_name: "{{k_instance_name}}"
-        kafka_ip: "{{k_elastic_ip}}"
     - include_tasks: ./install/install_docker_task.yaml
-    - include_tasks: ./docker/containerize_kafka_task.yaml
+    - shell: docker pull alexpena9291/cloud_computing:weather_api
+    - shell: docker run -d -p 8080:8080 alexpena9291/cloud_computing:weather_api
 
-- name: Run kafka server
-  hosts: "{{k_group_name}}"
-  remote_user: ubuntu
-  vars_files:
-    - ./config/kafka.yaml
-  become: yes
-  tasks:
-    # NOTE: one needs to manually clean up containers
-    - include_tasks: ./docker/run_kafka_image_task.yaml
+
+
 ...
