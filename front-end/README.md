@@ -1,19 +1,10 @@
-# Node/Express
-
-This example shows how to embed Kepler.gl in a node/express/webpack application. 
+# How to run the app
 
 #### 1. Install
 
 ```sh
 npm install
 ```
-
-or
-
-```sh
-yarn
-```
-
 
 #### 2. Mapbox Token
 add mapbox access token to node env
