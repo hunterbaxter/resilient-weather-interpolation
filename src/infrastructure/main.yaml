@@ -3,4 +3,6 @@
   import_playbook: ./kafka_playbook.yaml
 - name: Set up and start retriever
   import_playbook: ./retriever_playbook.yaml
+- name: Set up and start API
+  import_playbook: ./api_playbook.yaml
 ...
