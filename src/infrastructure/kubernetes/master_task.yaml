@@ -1,0 +1,47 @@
+- name: Reset kube cluster if already created
+  shell: kubeadm reset -f
+
+  # NOTE: if failure occured previously, one would need to delete extra files
+
+- name: Restart docker and kubelet services
+  service:
+    name: "{{item}}"
+    state: restarted
+  loop:
+    - docker
+    - kubelet
+
+- name: Create kube cluster with kubeadm
+  shell: sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+  register: output
+
+- name: Save print token so minions can join cluster
+  local_action: copy content={{output.stdout}} dest=join_token
+  become: yes
+
+- name: Creating /home/ubuntu/.kube directory
+  remote_user: ubuntu
+  become: no
+  shell: mkdir -p /home/ubuntu/.kube
+
+- name: Copying admin configuration to local /home/ubuntu/.kube/config
+  become: yes
+  copy:
+    src: /etc/kubernetes/admin.conf
+    dest: /home/ubuntu/.kube/config
+    remote_src: yes
+
+- name: Change ownership of /home/ubuntu/.kube/config to ubuntu:ubuntu
+  become: yes
+  file:
+    path: /home/ubuntu/.kube/config
+    owner: ubuntu
+    group: ubuntu
+
+- name: "Flannel networking (1/2) == container network virtualization"
+  shell: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+  become_user: ubuntu
+
+- name: "Flannel networking (2/2) == container network virtualization"
+  shell: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+  become_user: ubuntu

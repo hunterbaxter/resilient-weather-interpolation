@@ -1,0 +1,12 @@
+- name: Reset kube cluster if already created
+  shell: kubeadm reset -f
+
+- name: Copy kube cluster join token onto worker
+  # NOTE: src must be same as in ./configure/k8.yml
+  copy: src=join_token dest=worker_join_token
+
+- name: Extract join command from saved kube cluster join token
+  shell: cat worker_join_token | tail -2 > join.sh
+
+- name: Join worker to kube cluster
+  shell: sh join.sh

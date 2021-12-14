@@ -1,0 +1,9 @@
+---
+k8_instance_name: kubemaster
+k8_group_name: k8
+k8_instance_type: t2.medium
+k8_image: ami-00399ec92321828f5
+k8_security_group: everyone_get_in_here
+k8_region: us-east-2
+k8_elastic_ip: 
+...

@@ -1,0 +1,74 @@
+- name: Install packaged needed for K8s
+  apt:
+    name: "{{ item }}"
+    state: latest
+    update_cache: yes
+  loop:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - jq
+  become: yes
+
+- name: Add apt key for k8
+  apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    state: present   # this is default
+    keyring: /usr/share/keyrings/kubernetes-archive-keyring.gpg
+  become: yes
+
+- name: Add K8s repository to apt
+  apt_repository:
+    repo: "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] http://apt.kubernetes.io/ kubernetes-xenial main"
+    state: present
+    filename: kubernetes.list
+  become: yes
+
+- name: Install K8s
+  apt:
+    name: "{{ item }}"
+    state: latest
+    update_cache: yes
+  loop:
+    - kubeadm
+    - kubelet
+    - kubectl
+    - kubernetes-cni
+  become: yes
+
+- name: Disable swap memory
+  shell: swapoff -a
+
+- name: Copy docker daemon.json that changes cgroup driver
+  copy:
+    src: ../docker/daemon.json
+    dest: /etc/docker/daemon.json
+
+- name: systemctl daemon-reload after modifying docker daemon
+  ansible.builtin.systemd:
+    daemon_reload: yes
+
+- name: Add master alias to /etc/host
+  lineinfile:
+    path: /etc/hosts
+    line: "{{master_ip}} master"
+    insertafter: 127.0.0.1 localhost
+
+- name: Add minion aliases to /etc/host
+  lineinfile:
+    path: /etc/hosts
+    line: "{{item}}"
+    insertafter: 127.0.0.1 localhost
+  loop:
+    - {retriever_ip}
+    - {kafka_ip}
+    - {api_ip}
+
+- name: Enable and start docker and kubelet
+  service:
+    name: "{{item}}"
+    state: started
+    enabled: yes
+  loop:
+    - docker
+    - kubelet
