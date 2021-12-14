@@ -7,7 +7,8 @@ Github is a remote repository for git
 - When an event is triggered, an HTTP POST payload is sent to a configured URL.
 - This project will use webhooks to trigger CI/CD builds
 
-## Creating Webhooks
+## Secrets
+Go to repository settings and go to actions secrets
 
 ## Resources
 [Webhooks Basics](https://docs.github.com/en/developers/webhooks-and-events/webhooks/about-webhooks)
