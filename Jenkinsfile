@@ -1,10 +1,11 @@
 pipeline {
     agent any
-
     stages {
         stage('Run main playbook') {
             steps {
-                sh 'ansible-playbook src/infrastructure/main.yaml'
+                withAWS(credentials: 'aws-access', region: 'us-east-2') {
+                    sh 'ansible-playbook src/infrastructure/main.yaml'
+                }  
             }
         }
     }
