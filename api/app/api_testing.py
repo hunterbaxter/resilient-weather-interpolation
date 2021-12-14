@@ -74,6 +74,7 @@ weather_center_names = [
 kafka = KafkaWeather(weather_center_names, '18.118.248.88:9092')
 res = kafka.get_GeoJSON_data()
 print(len(res['features']))
+print(res['features'][0])
 # print(res)
 
 # print(kafka.get_interpolated_list())

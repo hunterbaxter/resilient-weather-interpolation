@@ -246,6 +246,8 @@ class KafkaWeather():
     def __init__(self, station_list, ip):
         self.station_dict = dict()
         self.kafka_ip = ip
+        self.max_value = 0
+        self.min_value = 0
         dumb_consumer = KafkaConsumer(bootstrap_servers=self.kafka_ip)
         self.station_topic_list = dumb_consumer.topics()
 
@@ -320,19 +322,25 @@ class KafkaWeather():
         }
 
     def format_data(self, data):
+        white = [255, 255, 255]
+        red = [255, 0, 0]
+        temp_step = 255.0 / float((self.max_value - self.min_value))
+        steps = float((data['value'] - self.min_value))
+        temp_diff = int(temp_step * steps)
+        color = [255, 255 - temp_diff, 255 - temp_diff]
         return {
             "type": "Feature",
             "geometry": {"type": "Polygon", "coordinates": [self.create_square(data['lon'], data['lat'])]},
-            'properties': {'field': data['value']}
+            'properties': {'field': data['value'], 'fillColor': color}
         }
 
     def create_square(self, lat, lon):
         return [
-            [lat + 0.005, lon + 0.005],
-            [lat + 0.005, lon - 0.005],
-            [lat - 0.005, lon - 0.005],
-            [lat - 0.005, lon + 0.005],
-            [lat + 0.005, lon + 0.005]
+            [lat + 0.0025, lon + 0.0025],
+            [lat + 0.0025, lon - 0.0025],
+            [lat - 0.0025, lon - 0.0025],
+            [lat - 0.0025, lon + 0.0025],
+            [lat + 0.0025, lon + 0.0025]
         ]
 
     def get_interpolated_list(self):
@@ -358,6 +366,10 @@ class KafkaWeather():
 
         point_mat = weather_mat[:, 0:2]
         value_mat = weather_mat[:, 2]
+
+        self.min_value, self.max_value = min(value_mat), max(value_mat)
+        print(self.min_value)
+        print(self.max_value)
 
         lon_max, lon_min = max(weather_mat[:, 0]), min(weather_mat[:, 0])
         lat_max, lat_min = max(weather_mat[:, 1]), min(weather_mat[:, 1])
