@@ -3,9 +3,7 @@ pipeline {
     stages {
         stage('Run main playbook') {
             steps {
-                withAWS(credentials: 'aws-access', region: 'us-east-2') {
-                    sh 'ansible-playbook ../jenk_main.yaml'
-                }  
+                sh 'ansible-playbook ../jenk_main.yaml'
             }
         }
     }
