@@ -1,9 +1,9 @@
 pipeline {
     agent any
     stages {
-        stage('Run main playbook') {
+        stage('Run Pytest') {
             steps {
-                sh 'ansible-playbook /var/jenkins_home/workspace/jank_main.yaml'
+                sh 'python3 pytest.py'
             }
         }
     }
