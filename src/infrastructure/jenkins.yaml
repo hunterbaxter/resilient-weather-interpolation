@@ -1,0 +1,38 @@
+---
+- name: Launch jenkins instance
+  hosts: localhost
+  vars_files:
+    - ./config/my_credentials.yaml
+    - ./config/jenkins.yaml
+  tasks:
+    - include_tasks: ./install/install_ansible_requirements_task.yaml
+    - include_tasks: ./launch_instance_task.yaml
+      vars:
+        access_key: "{{aws_access_key}}"
+        secret_key: "{{aws_secret_key}}"
+        key_path: "{{key}}"
+        instance_name: "{{j_instance_name}}"
+        group_name: "{{j_group_name}}"
+        instance_type: "{{j_instance_type}}"
+        image: "{{j_image}}"
+        security_group: "{{j_security_group}}"
+        region: "{{j_region}}"
+        elastic_ip: "{{j_elastic_ip}}"
+    - include_tasks: ./add_to_host_task.yaml
+      vars:
+        key_location: "{{key_path}}"
+        ip: "{{j_elastic_ip}}"
+        group_name: "{{j_group_name}}"
+
+
+- name: Set up a jenkins instance
+  hosts: "{{j_group_name}}"
+  remote_user: ubuntu
+  vars_files:
+    - ./config/jenkins.yaml
+  become: yes
+  tasks:
+    - include_tasks: ./install/install_universal_task.yaml
+    - include_tasks: ./install/install_docker_task.yaml
+    - include_tasks: ./docker/containerize_jenkins_task.yaml
+...

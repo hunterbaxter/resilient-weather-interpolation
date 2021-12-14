@@ -1,0 +1,9 @@
+---
+j_instance_name: jank_master
+j_group_name: jenkins
+j_instance_type: t2.medium
+j_image: ami-00399ec92321828f5
+j_security_group: everyone_get_in_here
+j_region: us-east-2
+j_elastic_ip: 3.132.9.170
+...

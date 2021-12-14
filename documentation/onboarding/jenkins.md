@@ -1,22 +1,15 @@
 # Jenkins
 A more advanced CI/CD system than github actions
 
-# Jenkins Tutorial
-- Since we are clever, we will use the jenkins docker image
+# Jenkins
+local
 ```
-docker pull jenkins/jenkins:lts-jdk11
+docker run --name jank -p 8080:8080 -p 50000:50000 -v `pwd`:/var/jenkins_home jankins
 ```
-- Run the image
+ubuntu
 ```
-docker run -dp 8080:8080 jenkins/jenkins:lts-jdk11
+docker run --name jank -p 8080:8080 -p 50000:50000 -v /home/ubuntu:/var/jenkins_home jankins
 ```
-
-- Since the container is running detached, one must go through the logs to find the password
-```
-docker logs containerID
-```
-- Since we are currently manual, and I am inexperienced, run download recommended packages
-- New Item -> Multibranch pipeline
 
 # Resources
 [Getting Started with Jenkins](https://www.jenkins.io/doc/pipeline/tour/getting-started/)
