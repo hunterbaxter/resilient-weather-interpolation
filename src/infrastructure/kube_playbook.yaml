@@ -14,13 +14,13 @@
         access_key: "{{aws_access_key}}"
         secret_key: "{{aws_secret_key}}"
         key_path: "{{key}}"
-        instance_name: "{{item}}_instance_name"
-        group_name: "{{item}}_group_name"
-        instance_type: "{{item}}_instance_type"
-        image: "{{item}}_image"
-        security_group: "{{item}}_security_group"
-        region: "{{item}}_region"
-        elastic_ip: "{{item}}_elastic_ip"
+        instance_name: "{{lookup('vars', item + '_instance_name')}}"
+        group_name: "{{lookup('vars', item + '_group_name')}}"
+        instance_type: "{{lookup('vars', item + '_instance_type')}}"
+        image: "{{lookup('vars', item + '_image')}}"
+        security_group: "{{lookup('vars', item + '_security_group')}}"
+        region: "{{lookup('vars', item + '_region')}}"
+        elastic_ip: "{{lookup('vars', item + '_elastic_ip')}}"
       loop:
         - r # for retriever
         - k # for kafka
@@ -29,10 +29,10 @@
     - include_tasks: ./cloud/add_to_host_task.yaml
       vars:
         key_location: "{{key_path}}"
-        ip: "{{item}}_elastic_ip"
+        ip: "{{lookup('vars', item + '_elastic_ip')}}"
         group_name:
-          - "{{item}}_group_name"
-          - "k8"
+          - "{{lookup('vars', item + '_group_name')}}"
+          - k8
       loop:
         - r # for retriever
         - k # for kafka
@@ -64,7 +64,7 @@
   tasks:
     - include_tasks: ./kubernetes/master_task.yaml
     - include_tasks: ./docker/containerize_retriever_task.yaml
-    # TODO: use bitnami instead of janky solution
+    # TODO: use bitnami instead of janky image
     - include_tasks: ./install/install_kafka_task.yaml
     - include_tasks: ./setup/kafka_server.yaml
       vars:
