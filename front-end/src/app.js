@@ -48,7 +48,7 @@ var geojson = {
            ]
         },
         "properties": {
-          "temp": "1",
+          "field": "100",
           "prop1": {"this": "that"}
         }
      },
@@ -87,7 +87,7 @@ var geojson = {
            ]
         },
         "properties": {
-          "temp": "10",
+          "field": "60",
           "prop1": {"this": "that"}
         },
  
@@ -127,13 +127,14 @@ var geojson = {
          ]
       },
       "properties": {
-        "temp": "5",
+        "field": "50",
         "prop1": {"this": "that"},
-        "fillColor": [255, 0, 0] // use this to manually change the color
+        "fillColor": [255, 0, 0]
       }
     }
   ]
 }
+
 
 const StyledWrapper = styled.div`
   position: absolute;
@@ -147,6 +148,7 @@ const apiURL = "http://18.189.79.44:8080/kepler/data"
 function App({dispatch}) {
 
   useEffect(()=> {
+
     const interval = setInterval(() => {
       axios.get(apiURL).then(res => {
         console.log(res.data)
@@ -154,21 +156,21 @@ function App({dispatch}) {
         var data = {
           datasets: {
             info: {
-              label: 'input info',
+              label: 'Weather Data',
               id: 'weather_data'
             },
             data: processGeojson(res.data)
           },
           options: {
             centerMap: false,
-            readOnly: false
+            readOnly: true
           },
           config: config
         }
 
         dispatch(wrapToMap(addDataToMap(data)))
       })
-    }, 17500)
+    }, 30000)
   }, [])
 
   return(

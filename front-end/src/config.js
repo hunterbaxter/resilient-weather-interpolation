@@ -2,7 +2,7 @@ export default {
         visState: {
           layers: [
             {
-              id: "321",
+              id: "weather_layer",
               type: "geojson",
               config: {
                 dataId: 'weather_data',
@@ -31,16 +31,19 @@ export default {
                   radius: 10,
                   stroked: false,
                   filled: true,
-                  tempRange: [
-                    0, 10
-                  ]
                 },
                 visualChannels: {
                   colorField: {
-                    name: "temp",
+                    name: "field",
                     type: "int"
                   },
                   colorScale: "quantile",
+                  sizeField: null,
+                  sizeScale: "linear",
+                  heightField: null,
+                  heightScale: "linear",
+                  radiusField: null,
+                  radiusScale: "linear"
                 }
               }
             }
@@ -49,7 +52,7 @@ export default {
         mapState: {
           latitude: 36.1627,
           longitude: -86.78,
-          zoom: 10,
+          zoom: 11,
         },
         mapStyle: {
           styleType: 'dark',
