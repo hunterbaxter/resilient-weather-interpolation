@@ -1,0 +1,15 @@
+- name: Get jenkins image
+  ansible.builtin.shell: docker pull jenkins/jenkins:lts-jdk11
+
+- name: Copy jankins docker file
+  ansible.builtin.copy:
+    src: dockerfile_jankins
+    dest: /home/ubuntu
+    owner: ubuntu
+    mode: 0777
+
+- name: Build jankins image
+  ansible.builtin.shell: sudo docker build -f dockerfile_jankins -t jankins .
+
+- name: Run Jenkins
+  ansible.builtin.shell: docker run --name jenk -p 8080:8080 -p 50000:50000 -v /home/ubuntu:/var/jenkins_home jankins
