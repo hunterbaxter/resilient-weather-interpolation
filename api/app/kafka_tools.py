@@ -256,7 +256,7 @@ class KafkaWeather():
         self.build_station_dict_from_kafka()
 
         scheduler = BackgroundScheduler()
-        scheduler.add_job(func=self.update_map, trigger="interval", seconds=10)
+        scheduler.add_job(func=self.update_map, trigger="interval", seconds=60)
         scheduler.start()
         self.update_map()
 
