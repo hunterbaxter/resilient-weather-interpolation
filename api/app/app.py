@@ -9,7 +9,7 @@ weather_center_names = [
     'center3'
 ]
 
-kafka = KafkaWeather(weather_center_names, '1.1.1.1.1.2')
+kafka = KafkaWeather(weather_center_names, '18.118.248.88:9092')
 
 app = flask.Flask(__name__)
 cors = CORS(app, resources={r"/kepler/data": {"origins": "*"}})

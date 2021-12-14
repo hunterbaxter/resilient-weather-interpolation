@@ -1,9 +1,10 @@
-from kafka import KafkaConsumer
+from kafka import KafkaConsumer, TopicPartition
 from typing import List
 from pandas import Timestamp
 import numpy as np
 from apscheduler.schedulers.background import BackgroundScheduler
 from scipy.interpolate import griddata
+import ast
 
 # LON THEN LAT
 
@@ -242,12 +243,15 @@ dummy_data = {
 
 class KafkaWeather():
 
-    def __init__(self, station_list, broker_ip):
+    def __init__(self, station_list, ip):
         self.station_dict = dict()
-        self.number = 0
+        self.kafka_ip = ip
+        dumb_consumer = KafkaConsumer(bootstrap_servers=self.kafka_ip)
+        self.station_topic_list = dumb_consumer.topics()
 
         # Setting up dictionary to hold most recent weather info
-        self.build_station_dict_from_list(station_list)
+        # self.build_station_dict_from_list(station_list)
+        self.build_station_dict_from_kafka()
 
         scheduler = BackgroundScheduler()
         scheduler.add_job(func=self.update_map, trigger="interval", seconds=10)
@@ -257,19 +261,24 @@ class KafkaWeather():
     def build_station_dict_from_list(self, station_list):
         for station in station_list:
             self.station_dict[station] = {
-                'latest_data': None, 'topic': dummy_data[station]}
+                'latest_data': None, 'listener': dummy_data[station]}
 
-    def build_station_dict_from_kafka(self, station_list, ip):
-        for station in station_list:
-            listener = KafkaConsumer(bootstrap_servers=ip)
-            listener.subscribe(topics=[str(station)])
+    def build_station_dict_from_kafka(self):
+        for station in self.station_topic_list:
+            new_listener = KafkaConsumer(
+                bootstrap_servers=self.kafka_ip)
+            tp = TopicPartition(station, 0)
+            new_listener.assign([tp])
             self.station_dict[station] = {
-                'latest_data': None, 'topic': listener}
+                'latest_data': None, 'listener': {'consumer': new_listener, 'topic_partition': tp}}
 
     def get_formatted_data_stream(self):
         data_dictionary = {"type": "FeatureCollection", "features": []}
-        # TODO - Add interpolation
-        for row in self.get_interpolated_list():
+        interpolated_list = self.get_interpolated_list()
+        if interpolated_list == None:
+            return {"Error": "No Points"}
+
+        for row in interpolated_list:
             data_dictionary["features"].append(
                 self.format_data(row))
         return data_dictionary
@@ -284,16 +293,20 @@ class KafkaWeather():
             if latest_value != None:
                 simplified_value = self.simplify_data(latest_value)
                 self.station_dict[station]['latest_data'] = simplified_value
-        self.number += 1
 
     def updated_value(self, station_properties):
-        return self.get_latest_value_from_list(station_properties['topic'])
+        return self.get_latest_value_from_kafka(station_properties['listener'])
 
-    def get_latest_value_from_kafka(self, kafka_consumer):
-        try:
-            val = next(kafka_consumer)
-            return val
-        except:
+    def get_latest_value_from_kafka(self, listener):
+        listener['consumer'].poll()
+        end_offset = listener['consumer'].end_offsets([listener['topic_partition']])[
+            listener['topic_partition']]
+        if end_offset > 0:
+            listener['consumer'].seek(
+                listener['topic_partition'], end_offset - 1)
+            return ast.literal_eval(
+                next(listener['consumer']).value.decode('utf-8'))
+        else:
             return None
 
     def get_latest_value_from_list(self, lst: List):
@@ -315,25 +328,48 @@ class KafkaWeather():
 
     def create_square(self, lat, lon):
         return [
-            [lat + 0.01, lon + 0.01],
-            [lat + 0.01, lon - 0.01],
-            [lat - 0.01, lon - 0.01],
-            [lat - 0.01, lon + 0.01],
-            [lat + 0.01, lon + 0.01]
+            [lat + 0.005, lon + 0.005],
+            [lat + 0.005, lon - 0.005],
+            [lat - 0.005, lon - 0.005],
+            [lat - 0.005, lon + 0.005],
+            [lat + 0.005, lon + 0.005]
         ]
 
     def get_interpolated_list(self):
 
         interpolated_lst = []
+        weather_array = []
+        for station in self.station_dict.values():
+            if station['latest_data'] != None:
+                weather_array.append([station['latest_data']['lon'], station['latest_data']['lat'],
+                                      station['latest_data']['value']])
 
-        weather_mat = np.array([[station['latest_data']['lon'], station['latest_data']['lat'],
-                                 station['latest_data']['value']] for station in self.station_dict.values()])
+        # Edge Conditions
+        if len(weather_array) == 0:
+            return None
+        elif len(weather_array) == 1:
+            return [{
+                'lon': weather_array[0][0],
+                'lat': weather_array[0][1],
+                'value': weather_array[0][2]
+            }]
+
+        weather_mat = np.array(weather_array)
 
         point_mat = weather_mat[:, 0:2]
         value_mat = weather_mat[:, 2]
 
-        lon_meshed, lat_meshed = np.meshgrid(
-            weather_mat[:, 0], weather_mat[:, 1])
+        lon_max, lon_min = max(weather_mat[:, 0]), min(weather_mat[:, 0])
+        lat_max, lat_min = max(weather_mat[:, 1]), min(weather_mat[:, 1])
+
+        width = 2 * int(abs(lon_max - lon_min) / 0.01)
+        height = 2 * int(abs(lat_max - lat_min) / 0.01)
+
+        lon_meshed = np.array([[float(val) / 1000.0 for val in range(
+            int(lon_min * 1000.0), int(lon_max * 1000.0), 5)] for _ in range(height)])
+
+        lat_meshed = np.column_stack(
+            [float(val) / 1000.0 for val in range(int(lat_min * 1000.0), int(lat_max * 1000.0), 5)] for _ in range(width))
 
         interpolated_values = griddata(
             point_mat, value_mat, (lon_meshed, lat_meshed), method='nearest')
