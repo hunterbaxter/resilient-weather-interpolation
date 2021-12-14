@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Run main playbook') {
             steps {
-                sh 'ansible-playbook /var/jenkins_home/workspace/pipline_jankins/jank_main.yaml'
+                sh 'ansible-playbook /var/jenkins_home/workspace/jank_main.yaml'
             }
         }
     }
