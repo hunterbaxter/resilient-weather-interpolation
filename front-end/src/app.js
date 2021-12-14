@@ -142,7 +142,7 @@ const StyledWrapper = styled.div`
 `;
 
 const wrapToMap = wrapTo('map1')
-const apiURL = "http://3.144.203.184:8080/kepler/data"
+const apiURL = "http://18.189.79.44:8080/kepler/data"
 
 function App({dispatch}) {
 
@@ -168,7 +168,7 @@ function App({dispatch}) {
 
         dispatch(wrapToMap(addDataToMap(data)))
       })
-    }, 10000)
+    }, 17500)
   }, [])
 
   return(

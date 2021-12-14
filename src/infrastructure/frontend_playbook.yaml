@@ -1,0 +1,41 @@
+---
+- name: Launch Front End instance
+  hosts: localhost
+  vars_files:
+    - ./config/credentials.yaml
+    - ./config/frontend.yaml
+  tasks:
+    - include_tasks: ./install/install_ansible_requirements_task.yaml
+    - include_tasks: ./launch_instance_task.yaml
+      vars:
+        access_key: "{{aws_access_key}}"
+        secret_key: "{{aws_secret_key}}"
+        key_path: "{{key}}"
+        instance_name: "{{k_instance_name}}"
+        group_name: "{{k_group_name}}"
+        instance_type: "{{k_instance_type}}"
+        image: "{{k_image}}"
+        security_group: "{{k_security_group}}"
+        region: "{{k_region}}"
+        elastic_ip: "{{k_elastic_ip}}"
+    - include_tasks: ./add_to_host_task.yaml
+      vars:
+        key_location: "{{key_path}}"
+        ip: "{{k_elastic_ip}}"
+        group_name: "{{k_group_name}}"
+
+- name: Set up Front End
+  hosts: "{{k_group_name}}"
+  remote_user: ubuntu
+  vars_files:
+    - ./config/frontend.yaml
+  become: yes
+  tasks:
+    - include_tasks: ./install/install_universal_task.yaml
+    - include_tasks: ./install/install_docker_task.yaml
+    - shell: docker pull alexpena9291/cloud_computing:frontend
+    - shell: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+    # - shell: docker run -it --rm -v ${PWD}:/app -v /app/node_modules -p 3001:3000 alexpena9291/cloud_computing:frontend
+    - shell: docker run -d -p 3001:3000 frontend:dev
+
+...

@@ -1,0 +1,9 @@
+---
+k_instance_name: kepler_app
+k_group_name: frontend
+k_instance_type: t2.medium
+k_image: ami-00399ec92321828f5
+k_security_group: no security
+k_region: us-east-2
+k_elastic_ip: 3.142.179.85
+...

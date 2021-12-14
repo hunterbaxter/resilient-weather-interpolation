@@ -19,5 +19,5 @@ COPY . ./
 
 ENV GENERATE_SOURCEMAP=false
 
-# start app
+#start app
 CMD ["npm", "start"]
