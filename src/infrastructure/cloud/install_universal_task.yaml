@@ -1,0 +1,30 @@
+- name: Update and upgrade apt package index
+  apt:
+    upgrade: yes
+    update_cache: yes
+
+- name: Install underlying packages needed for our code
+  apt:
+    name: "{{ item }}"
+    state: latest
+    update_cache: yes
+  # TODO: re-examine the necessity of some of these
+  loop:
+    - default-jre
+    - wget
+    - python3
+    - python3-pip
+    - curl
+    - net-tools
+  become: yes
+
+- name: Recursively change ownership /home/ubuntu to ubuntu user and group
+  ansible.builtin.file:
+    path: /home/ubuntu
+    state: directory
+    recurse: yes
+    owner: ubuntu
+    group: ubuntu
+
+- name: Install all aws packages to avoid hard to debug errors
+  shell: pip install boto boto3 botocore

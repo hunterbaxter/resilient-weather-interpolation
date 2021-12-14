@@ -1,9 +1,9 @@
 ---
-k_instance_name: geojson_api
-k_group_name: api
-k_instance_type: t2.medium
-k_image: ami-00399ec92321828f5
-k_security_group: weatherbit_api_security
-k_region: us-east-2
-k_elastic_ip: 18.189.79.44
+a_instance_name: geojson_api
+a_group_name: api
+a_instance_type: t2.medium
+a_image: ami-00399ec92321828f5
+a_security_group: weatherbit_api_security
+a_region: us-east-2
+a_elastic_ip: 18.189.79.44
 ...
