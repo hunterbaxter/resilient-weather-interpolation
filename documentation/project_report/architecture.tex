@@ -1,10 +1,39 @@
 % NOTE: This section needs most references, theoretical citations, etc.
 \section{Architecture}
-% FIX: what is the official design pattern name
-\subsection{Retriever}
-% FIX: what is the official design pattern name
+\subsection{Overview}
+% Meghan
+Our objective when designing the system architecture for this project was to utilize many of the technologies and frameworks we have discussed throughout the semester.
+With that in mind, we decided to approach each portion of our system as a micro-service which could be easily containerized and managed by a container orchestration service.
+In doing so, we have designed a system which is both resilient and highly available. 
+
+\subsection{Producer}
+% Meghan
+Much of this project relies on geo spatial data.
+Namely, we utilized live weather date served from a data vendor Weatherbit.io.
+Our producer makes use of a background scheduler which periodically polls weatherbit's API to retrieve the current weather.
+These polls occur every 15 minutes (the minimum possible interval for which we are guaranteed to receive new data).
+In order to make this data available to the rest of our services, we utilized Kafka.
+We published this data to the Kafka brokers, encoding the topics so that they reflect the location of the weather station from which they were received.
+This service is containerized in a Docker container and hosted on its own AWS EC2 instance.
+
 \subsection{Broker}
-% FIX: what is the official design pattern name
-\subsection{API}
-% FIX: what is the official design pattern name
+% hb
+\cite{kreps2011kafka}
+\cite{hunt2010zookeeper}
+
+\subsection{RESTful API}
+\cite{fielding2002principled}
+% TODO: mention interpolation theory: hb
+
+
 \subsection{Web Application}
+% Meghan
+To provide a meaningful visualization of the interpolated data, we created a React web application which utilizes Kepler.gl to display the weather in the region of interest.
+This service runs inside of a Docker container on an AWS EC2 instance and is managed by our container orchestration service. 
+
+\subsection{CI/CD}
+% Meghan
+One of our goals for this project was high availability. In order to achieve this, we needed to implement a CI/CD pipeline. We utilized Jenkins, an open source DevOps tool specifically designed for managing CI/CD pipelines. If any new changes are observed on any branch, the code is built and tested to ensure that the new version is successful before sending it to production.
+
+\subsection{Container Orchestration}
+% hb
