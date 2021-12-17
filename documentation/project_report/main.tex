@@ -1,13 +1,17 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
-\usepackage[margin=1cm]{geometry}
+\usepackage[margin=1cm]{geometry} % TODO: vertical margins cutoff numbers
 \usepackage{graphicx}
 \usepackage[]{enumerate}
 \usepackage{biblatex} %Imports biblatex package
-% TODO: citations page 
-% \addbibresource{references.bib} %Import the bibliography file
-% TODO: Make formatting page to make it look pretty
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    urlcolor=blue,
+}
+% TODO: Separate packages/design and paper organization/order
 
+% TODO: make author section look like paper
 % TODO: add names and emails
 \title{Resilient Weather Interpolation}
 \author{
@@ -18,10 +22,16 @@
     % \texttt{email}
 }
 
+% TODO: Separate packages/design and paper organization/order
+% see project requirements on box
+\addbibresource{references.bib}
 \begin{document}
 \maketitle
-\input{abstract.tex}
-\input{challenges}
-\input{work_distribution}
-% \printbibliography
+\input{abstract}
+\input{introduction}
+\input{architecture}
+\input{implementation}
+\input{teamwork}
+\input{conclusion}
+\printbibliography
 \end{document}
