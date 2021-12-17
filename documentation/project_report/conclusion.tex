@@ -1,13 +1,12 @@
 \section{Conclusion}
 % 1-2 sentences summarizing abstract in a positive light
-To conclude, our project delivered a sophisticated data pipeline and visualization system that further refined knowledge of technologies learned in class, and added some additional.
+To conclude, our project delivered a sophisticated data pipeline, and visualization system that further refined our knowledge and practical understanding of technologies learned in class. 
+Further, we were able to add some additional technologies and integrate them into our architecture using the micro-service model to separate each portion of the project into its own container. 
 % limitations
 The main limitation of the project was the overlapping timelines of Programming Assignment 4 and the final project.
-An additional limitation was limited access to historical weather data in the free-tier plan from weatherbit. 
-As a result, we pivoted our wishful kriging model, which required historical data,
-to a simpler interpolation model that did not require historical data.
-% future work lol
-The goal of this project was to strengthen and expand our developer tool kits. 
-As a result, the project has served its purpose, and their are not any future work possibilities.
-% NOTE: should we include a github link, or just do a large zip file?
-\url{https://github.com/baxterhc/resilient-weather-interpolation}
+Another limitation was limited access to historical weather data in the free-tier plan from weatherbit.
+Given unlimited time and financial resources, we would have liked to implement our wishful kriging model (which requires historical data), to a more basic interpolation model that could use live data. 
+One upside of this transition was it allowed us to remove the database altogether. We were able to pass our data to Kafka brokers and then directly serve it to the front end for visualization purposes, which would have been impossible without the technologies discussed in this course.
+
+The goal of this project was to strengthen and expand our developer tool kits and build on the frameworks and technologies that we have learned throughout this course.
+In the future, this project could be expanded to scale to serve weather across several different geographical regions. This would require a more scalable system and changes to the API to make it more efficient. Overall, this project served its purpose to expand our understandings and practical skills of the cloud computing technologies and frameworks we have covered throughout the semester. 
