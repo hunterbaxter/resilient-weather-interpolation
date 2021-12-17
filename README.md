@@ -7,8 +7,3 @@
 [src](./src/) contains source code for the project
 
 [Jenkinsfile](./Jenkinsfile) manages Jenkins build and deployment of new versions
-
-## Contributors
-
-- [Hunter Baxter](https://baxterhc.github.io/)
-- [Meghan Callandriello](https://github.com/mcallandriello)
